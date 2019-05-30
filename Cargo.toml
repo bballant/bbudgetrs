@@ -1,7 +1,13 @@
 [package]
 name = "bbudgetrs"
 version = "0.1.0"
-authors = ["Brian Ballantine <brianballantine@gmail.com>"]
+authors = ["Brian Ballantine"]
 edition = "2018"
 
 [dependencies]
+ferris-says  = "0.1"
+csv          = "1"
+clap         = "2"
+serde        = "1"
+serde_derive = "1"
+chrono       = { version = "0.4", features = ["serde"] }
