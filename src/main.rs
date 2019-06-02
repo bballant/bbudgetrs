@@ -60,6 +60,25 @@ fn get1() -> i32 {
     return 1;
 }
 
+fn get_records(file_path: &str) -> Result<Vec<Record>, Box<Error>> {
+    let mut rdr = csv::Reader::from_path(file_path)?;
+    Ok(rdr.deserialize().map(|x| x.unwrap()).collect())
+    // let mut vec = Vec::new();
+    // for result in rdr.deserialize() {
+    //     let record: Record = result?;
+    //     vec.push(record);
+    // }
+    // let vec2:Vec<Record> = rdr.deserialize().map(|x| x.unwrap()).collect();
+    // Ok(vec2)
+    //let x: Iterator<Item = Record> = rdr.deserialize().into_iter();
+    //return Ok(rdr.deserialize().into_iter());
+    // for result in rdr.deserialize() {
+    //     let record: Record = result?;
+    //     println!("{:?}", record);
+    // }
+    //Ok(())
+}
+
 fn run(file_path: &str) -> Result<(), Box<Error>> {
     let mut rdr = csv::Reader::from_path(file_path)?;
     for result in rdr.deserialize() {
