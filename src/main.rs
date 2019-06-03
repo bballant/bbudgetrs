@@ -13,38 +13,13 @@ use std::error::Error;
 //use std::ffi::OsString;
 //use std::fs::File;
 use std::process;
-use chrono::naive::NaiveDate;
-use chrono::format::ParseError;
-use serde::{Deserialize, Deserializer};
+
+mod record;
 
 #[derive(Debug, Deserialize)]
 struct CategoryMatcher {
     category: String,
     matcher: String
-}
-
-fn parse_parse(str: &String) -> Result<NaiveDate, ParseError> {
-    return NaiveDate::parse_from_str(str, "%m/%d/%Y");
-}
-
-fn callback<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let y = parse_parse(&String::deserialize(deserializer)?);
-    y.map_err(serde::de::Error::custom)
-}
-
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-struct Record {
-    #[serde(deserialize_with = "callback")]
-    date: NaiveDate,
-    transaction: String,
-    name: String,
-    memo: Option<String>,
-    amount: f64
 }
 
 fn rust_say() {
@@ -60,29 +35,15 @@ fn get1() -> i32 {
     return 1;
 }
 
-fn get_records(file_path: &str) -> Result<Vec<Record>, Box<Error>> {
+fn get_records(file_path: &str) -> Result<Vec<record::Record>, Box<Error>> {
     let mut rdr = csv::Reader::from_path(file_path)?;
     Ok(rdr.deserialize().map(|x| x.unwrap()).collect())
-    // let mut vec = Vec::new();
-    // for result in rdr.deserialize() {
-    //     let record: Record = result?;
-    //     vec.push(record);
-    // }
-    // let vec2:Vec<Record> = rdr.deserialize().map(|x| x.unwrap()).collect();
-    // Ok(vec2)
-    //let x: Iterator<Item = Record> = rdr.deserialize().into_iter();
-    //return Ok(rdr.deserialize().into_iter());
-    // for result in rdr.deserialize() {
-    //     let record: Record = result?;
-    //     println!("{:?}", record);
-    // }
-    //Ok(())
 }
 
 fn run(file_path: &str) -> Result<(), Box<Error>> {
     let mut rdr = csv::Reader::from_path(file_path)?;
     for result in rdr.deserialize() {
-        let record: Record = result?;
+        let record: record::Record = result?;
         println!("{:?}", record);
     }
     Ok(())
